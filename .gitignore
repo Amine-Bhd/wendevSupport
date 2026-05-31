@@ -13,6 +13,7 @@ dist/
 build/
 coverage/
 infra/azure/rendered/
+.playwright-cli/
 
 # Références locales non destinées à un dépôt public
 *.pdf

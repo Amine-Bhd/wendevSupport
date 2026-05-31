@@ -110,6 +110,7 @@ La version cloud est préparée dans :
 infra/azure/
 k8s/azure/
 rapport/phase5_deploiement_azure_aks.md
+rapport/captures_phase5_azure_aks.md
 ```
 
 Déroulé prévu :
@@ -120,10 +121,27 @@ Déroulé prévu :
 .\infra\azure\03-check-app.ps1
 ```
 
+La région par défaut est `spaincentral`, car elle est autorisée par la policy de la subscription Azure for Students utilisée.
+
+La version Azure validée expose l'application via un Service Kubernetes de type `LoadBalancer`. Les sorties de validation sont documentées dans `rapport/captures_phase5_azure_aks.md`.
+
+Capture navigateur cloud :
+
+```text
+screenshots/wendev-tickets-azure.png
+```
+
 Le script de nettoyage des ressources Azure est :
 
 ```powershell
 .\infra\azure\04-cleanup-azure.ps1
+```
+
+Pour réduire les coûts sans supprimer tout l'environnement :
+
+```powershell
+.\infra\azure\05-stop-aks.ps1
+.\infra\azure\06-start-aks.ps1
 ```
 
 ## Note de sécurité

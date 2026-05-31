@@ -8,12 +8,24 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+$AzCli = (Get-Command az -ErrorAction SilentlyContinue).Source
+if (-not $AzCli) {
+    $AzCli = "C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd"
+}
+
+function Invoke-Az {
+    & $AzCli @args
+    if ($LASTEXITCODE -ne 0) {
+        throw "Azure CLI command failed: az $($args -join ' ')"
+    }
+}
+
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $AzureK8sDir = Join-Path $RepoRoot "k8s\azure"
 $RenderedDir = Join-Path $PSScriptRoot "rendered"
 
 Write-Host "== Lecture du login server ACR =="
-$AcrLoginServer = az acr show `
+$AcrLoginServer = Invoke-Az acr show `
     --resource-group $ResourceGroup `
     --name $AcrName `
     --query loginServer `

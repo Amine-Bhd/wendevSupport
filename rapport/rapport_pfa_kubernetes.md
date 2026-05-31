@@ -383,9 +383,10 @@ Captures disponibles :
 
 - `screenshots/wendev-tickets-home.png` : page principale de l'application ;
 - `screenshots/wendev-tickets-after-create.png` : application après création d'un ticket de test.
+- `screenshots/wendev-tickets-azure.png` : version Azure exposée via LoadBalancer avec ticket créé.
 - `rapport/captures_phase4_kubectl.md` : sorties terminal Kubernetes et tests Ingress.
 
-La phase Azure est préparée dans `rapport/phase5_deploiement_azure_aks.md`. Elle décrit le passage vers Azure Kubernetes Service, l'utilisation d'Azure Container Registry et l'exposition de l'application par un LoadBalancer Azure.
+La phase Azure est documentée dans `rapport/phase5_deploiement_azure_aks.md`. Elle décrit le passage vers Azure Kubernetes Service, l'utilisation d'Azure Container Registry et l'exposition de l'application par un LoadBalancer Azure.
 
 Sorties terminal déjà sauvegardées dans `rapport/captures_phase4_kubectl.md` :
 
@@ -397,6 +398,19 @@ Sorties terminal déjà sauvegardées dans `rapport/captures_phase4_kubectl.md` 
 - test d'accès via Ingress ;
 - test de suppression puis recréation d'un Pod ;
 - test de scaling manuel.
+
+Sorties terminal Azure sauvegardées dans `rapport/captures_phase5_azure_aks.md` :
+
+- sortie du compte Azure utilisé ;
+- images présentes dans Azure Container Registry ;
+- état du cluster AKS ;
+- sortie de `kubectl get nodes -o wide` ;
+- sortie de `kubectl get pods -n wendev -o wide` ;
+- sortie de `kubectl get deploy -n wendev -o wide` ;
+- sortie de `kubectl get svc -n wendev` ;
+- tests HTTP publics sur `/health` et `/api/health` ;
+- création d'un ticket sur la version cloud ;
+- estimation budgétaire et stratégie stop/start.
 
 Diagrammes préparés :
 

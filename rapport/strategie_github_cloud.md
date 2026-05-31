@@ -92,6 +92,7 @@ GitHub facilitera le passage vers Azure AKS :
 - les manifests Kubernetes seront réutilisables ;
 - un pipeline GitHub Actions pourra déployer vers AKS ;
 - les secrets cloud pourront être stockés hors du dépôt.
+- les scripts Azure pourront être suivis, relus et réutilisés.
 
 Architecture cible possible :
 
@@ -114,3 +115,14 @@ Pour cette étape, le projet est préparé pour GitHub avec :
 
 Le push vers GitHub doit être fait après validation du contenu à publier.
 
+## 7. Maîtrise des coûts Azure
+
+Le dépôt contient aussi des scripts pour éviter de laisser tourner inutilement les ressources cloud :
+
+```text
+infra/azure/05-stop-aks.ps1
+infra/azure/06-start-aks.ps1
+infra/azure/04-cleanup-azure.ps1
+```
+
+Cette approche permet de garder la traçabilité GitHub tout en contrôlant la consommation des crédits Azure.
