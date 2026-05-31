@@ -241,3 +241,27 @@ Avec un crédit restant d'environ `68.47 USD`, il n'est pas recommandé de laiss
 - arrêter AKS après usage avec `infra/azure/05-stop-aks.ps1` ;
 - redémarrer AKS avant la démonstration avec `infra/azure/06-start-aks.ps1` ;
 - supprimer toutes les ressources après la soutenance avec `infra/azure/04-cleanup-azure.ps1`.
+
+## 12. État après validation
+
+Après les tests et les captures, le cluster AKS a été arrêté afin de réduire la consommation des crédits Azure.
+
+Commande :
+
+```powershell
+az aks show --resource-group rg-wendev-k8s --name aks-wendev-support --query "{name:name,powerState:powerState.code,provisioningState:provisioningState,location:location,sku:sku.tier}" -o table
+```
+
+Résultat :
+
+```text
+Name                PowerState    ProvisioningState    Location      Sku
+------------------  ------------  -------------------  ------------  -----
+aks-wendev-support  Stopped       Succeeded            spaincentral  Free
+```
+
+L'application publique n'est donc pas accessible tant que le cluster est arrêté. Avant une démonstration, il suffit d'exécuter :
+
+```powershell
+.\infra\azure\06-start-aks.ps1
+```
