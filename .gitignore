@@ -1,0 +1,31 @@
+# Dépendances
+node_modules/
+
+# Variables locales et secrets
+.env
+.env.*
+k8s/02-secret.yaml
+
+# Fichiers générés localement
+*.log
+*.tmp
+dist/
+build/
+coverage/
+
+# Références locales non destinées à un dépôt public
+*.pdf
+transcripts/
+pdf_extracted_images/
+
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives
+*.zip
+*.7z
+*.rar
+

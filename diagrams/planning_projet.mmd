@@ -1,0 +1,23 @@
+gantt
+    title Planification du projet Kubernetes
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d/%m
+
+    section Phase 1
+    Étude de l'existant               :done, p1a, 2026-04-22, 4d
+    Critique et problématique         :done, p1b, after p1a, 3d
+
+    section Phase 2
+    Étude comparative                 :active, p2a, 2026-04-29, 4d
+    Choix de la solution              :p2b, after p2a, 2d
+
+    section Phase 3
+    Architecture Kubernetes           :p3a, 2026-05-06, 5d
+    Diagrammes techniques             :p3b, after p3a, 3d
+
+    section Phase 4
+    Installation environnement local  :p4a, 2026-05-15, 3d
+    Développement application démo    :p4b, after p4a, 5d
+    Déploiement Kubernetes            :p4c, after p4b, 4d
+    Tests et captures                 :p4d, after p4c, 4d
+    Rapport final et soutenance       :p4e, after p4d, 4d

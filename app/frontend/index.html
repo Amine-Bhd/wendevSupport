@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wendev Tickets</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Wendev Support</p>
+        <h1>Gestion des tickets</h1>
+      </div>
+      <div class="status" id="api-status">API en vérification</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel">
+        <div class="section-heading">
+          <h2>Nouveau ticket</h2>
+        </div>
+        <form id="ticket-form" class="ticket-form">
+          <label>
+            Titre
+            <input id="title" name="title" maxlength="160" required />
+          </label>
+
+          <label>
+            Description
+            <textarea id="description" name="description" rows="5"></textarea>
+          </label>
+
+          <label>
+            Priorité
+            <select id="priority" name="priority">
+              <option value="basse">Basse</option>
+              <option value="normale" selected>Normale</option>
+              <option value="haute">Haute</option>
+              <option value="critique">Critique</option>
+            </select>
+          </label>
+
+          <button type="submit" class="primary-button">Créer</button>
+        </form>
+      </section>
+
+      <section class="panel tickets-panel">
+        <div class="section-heading row">
+          <div>
+            <h2>Tickets actifs</h2>
+            <p id="ticket-count">0 ticket</p>
+          </div>
+          <button type="button" id="refresh" class="ghost-button">Actualiser</button>
+        </div>
+
+        <div id="tickets" class="tickets-list"></div>
+      </section>
+    </main>
+
+    <template id="ticket-template">
+      <article class="ticket">
+        <div class="ticket-main">
+          <div>
+            <h3></h3>
+            <p class="description"></p>
+          </div>
+          <span class="priority"></span>
+        </div>
+        <div class="ticket-footer">
+          <span class="status-label"></span>
+          <select class="status-select">
+            <option value="ouvert">Ouvert</option>
+            <option value="en_cours">En cours</option>
+            <option value="resolu">Résolu</option>
+            <option value="ferme">Fermé</option>
+          </select>
+        </div>
+      </article>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

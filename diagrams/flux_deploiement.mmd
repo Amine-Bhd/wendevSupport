@@ -1,0 +1,26 @@
+flowchart LR
+    dev["Développeur / Administrateur"] --> code["Code source\nFrontend + Backend"]
+    code --> build["docker build\nCréation des images"]
+    build --> registry["Registry Docker\nDocker Hub / Azure Container Registry"]
+    registry --> deploy["kubectl apply\nManifests Kubernetes"]
+    deploy --> k8s["Cluster Kubernetes"]
+
+    subgraph k8s["Cluster Kubernetes"]
+        dep["Deployments"]
+        pods["Pods"]
+        svc["Services"]
+        ing["Ingress / LoadBalancer"]
+    end
+
+    dep --> pods
+    pods --> svc
+    svc --> ing
+    ing --> users["Utilisateurs"]
+
+    classDef action fill:#eef2ff,stroke:#4f46e5,color:#111827
+    classDef cluster fill:#f0fdf4,stroke:#16a34a,color:#111827
+    classDef access fill:#fdf2f8,stroke:#db2777,color:#111827
+
+    class dev,code,build,registry,deploy action
+    class k8s,dep,pods,svc cluster
+    class ing,users access

@@ -1,0 +1,46 @@
+flowchart TB
+    users["Utilisateurs"] --> lb["Ingress / LoadBalancer"]
+
+    subgraph cluster["Cluster Kubernetes"]
+        cp["Control Plane\nAPI Server, Scheduler,\nController Manager, etcd"]
+
+        subgraph w1["Worker Node 1"]
+            podfe1["Pod frontend\nreplica 1"]
+            podapi1["Pod backend API\nreplica 1"]
+        end
+
+        subgraph w2["Worker Node 2"]
+            podfe2["Pod frontend\nreplica 2"]
+            podapi2["Pod backend API\nreplica 2"]
+        end
+
+        svcfe["Service frontend"]
+        svcapi["Service backend"]
+        svcdb["Service PostgreSQL"]
+        db["PostgreSQL\nStatefulSet / Pod"]
+    end
+
+    lb --> svcfe
+    svcfe --> podfe1
+    svcfe --> podfe2
+    podfe1 --> svcapi
+    podfe2 --> svcapi
+    svcapi --> podapi1
+    svcapi --> podapi2
+    podapi1 --> svcdb
+    podapi2 --> svcdb
+    svcdb --> db
+    cp -. orchestre .-> w1
+    cp -. orchestre .-> w2
+
+    classDef control fill:#fff7ed,stroke:#ea580c,color:#111827
+    classDef worker fill:#f0fdf4,stroke:#16a34a,color:#111827
+    classDef pod fill:#eff6ff,stroke:#2563eb,color:#111827
+    classDef service fill:#fdf2f8,stroke:#db2777,color:#111827
+    classDef db fill:#fefce8,stroke:#ca8a04,color:#111827
+
+    class cp control
+    class w1,w2 worker
+    class podfe1,podfe2,podapi1,podapi2 pod
+    class svcfe,svcapi,svcdb,lb service
+    class db db

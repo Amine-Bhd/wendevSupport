@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tickets-config
+  namespace: wendev
+  labels:
+    app.kubernetes.io/part-of: wendev-tickets
+data:
+  NODE_ENV: "production"
+  PGHOST: "postgres"
+  PGPORT: "5432"
+  PGDATABASE: "ticketsdb"

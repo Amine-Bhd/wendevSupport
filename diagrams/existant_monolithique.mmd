@@ -1,0 +1,22 @@
+flowchart LR
+    users["Utilisateurs internes / externes"] --> router["Routeur / Pare-feu"]
+    router --> switch["Switch réseau LAN"]
+
+    switch --> srv1["Serveur applicatif 1\nApplication monolithique A"]
+    switch --> srv2["Serveur applicatif 2\nApplication monolithique B"]
+    switch --> srv3["Serveur applicatif 3\nApplication tickets/incidents"]
+    switch --> db["Serveur base de données"]
+
+    srv1 --> db
+    srv2 --> db
+    srv3 --> db
+
+    admin["Poste administrateur"] --> switch
+
+    classDef server fill:#eef2ff,stroke:#4338ca,color:#111827
+    classDef network fill:#ecfeff,stroke:#0891b2,color:#111827
+    classDef user fill:#f8fafc,stroke:#475569,color:#111827
+
+    class srv1,srv2,srv3,db server
+    class router,switch network
+    class users,admin user

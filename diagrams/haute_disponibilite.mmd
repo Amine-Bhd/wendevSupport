@@ -1,0 +1,33 @@
+flowchart TB
+    users["Utilisateurs"] --> ingress["Ingress / LoadBalancer"]
+    ingress --> svc["Service backend"]
+
+    subgraph cluster["Cluster Kubernetes"]
+        subgraph worker1["Worker Node 1"]
+            pod1["backend-api\nPod replica 1"]
+        end
+
+        subgraph worker2["Worker Node 2"]
+            pod2["backend-api\nPod replica 2"]
+        end
+
+        deploy["Deployment backend\nreplicas: 2"]
+    end
+
+    svc --> pod1
+    svc --> pod2
+    deploy -. maintient l'état désiré .-> pod1
+    deploy -. maintient l'état désiré .-> pod2
+
+    worker1 -. panne possible .-> pod1
+    pod2 --> available["Application toujours disponible\nvia le replica restant"]
+
+    classDef worker fill:#f0fdf4,stroke:#16a34a,color:#111827
+    classDef pod fill:#eff6ff,stroke:#2563eb,color:#111827
+    classDef service fill:#fdf2f8,stroke:#db2777,color:#111827
+    classDef note fill:#fefce8,stroke:#ca8a04,color:#111827
+
+    class worker1,worker2 worker
+    class pod1,pod2 pod
+    class ingress,svc service
+    class available,deploy note
