@@ -30,8 +30,8 @@ L'application support, Wendev Tickets, reste volontairement simple afin que le c
 4. Chapitre 3 - Architecture Kubernetes proposée
 5. Chapitre 4 - Mise en œuvre locale
 6. Chapitre 5 - Déploiement cloud sur Azure AKS
-7. Tests, résultats et validation
-8. Limites et perspectives
+7. Chapitre 6 - Tests, résultats et validation
+8. Chapitre 7 - Limites et perspectives
 9. Conclusion générale
 10. Bibliographie
 11. Annexes
@@ -40,13 +40,42 @@ L'application support, Wendev Tickets, reste volontairement simple afin que le c
 
 | Figure | Description | Source |
 | --- | --- | --- |
-| Figure 1 | Architecture existante monolithique | `diagrams/existant_monolithique.mmd` |
-| Figure 2 | Architecture cible Kubernetes | `diagrams/architecture_cible_kubernetes.mmd` |
-| Figure 3 | Flux de déploiement Docker vers Kubernetes | `diagrams/flux_deploiement.mmd` |
-| Figure 4 | Principe de haute disponibilité | `diagrams/haute_disponibilite.mmd` |
+| Figure 1 | Architecture existante monolithique | `diagrams/rendered/existant_monolithique.png` |
+| Figure 2 | Architecture cible Kubernetes | `diagrams/rendered/architecture_cible_kubernetes.png` |
+| Figure 3 | Flux de déploiement Docker vers Kubernetes | `diagrams/rendered/flux_deploiement.png` |
+| Figure 4 | Principe de haute disponibilité | `diagrams/rendered/haute_disponibilite.png` |
 | Figure 5 | Application Wendev Tickets en local | `screenshots/wendev-tickets-home.png` |
 | Figure 6 | Application après création d'un ticket | `screenshots/wendev-tickets-after-create.png` |
 | Figure 7 | Application déployée sur Azure AKS | `screenshots/wendev-tickets-azure.png` |
+
+## Liste des tableaux
+
+| Tableau | Description |
+| --- | --- |
+| Tableau 1 | Conformité du projet au cahier des charges |
+| Tableau 2 | Existant matériel de Wendev |
+| Tableau 3 | Planification du projet |
+| Tableau 4 | Étude comparative des solutions |
+| Tableau 5 | Choix local et cloud |
+| Tableau 6 | Objets Kubernetes utilisés |
+| Tableau 7 | Environnement technique local |
+| Tableau 8 | Scripts Azure |
+| Tableau 9 | Difficultés rencontrées et solutions |
+
+## Liste des abréviations
+
+| Abréviation | Signification |
+| --- | --- |
+| ACR | Azure Container Registry |
+| AKS | Azure Kubernetes Service |
+| API | Application Programming Interface |
+| CI/CD | Continuous Integration / Continuous Deployment |
+| HPA | Horizontal Pod Autoscaler |
+| HTTP | HyperText Transfer Protocol |
+| LAN | Local Area Network |
+| PVC | PersistentVolumeClaim |
+| VM | Virtual Machine |
+| WSL | Windows Subsystem for Linux |
 
 ## Introduction générale
 
@@ -126,19 +155,7 @@ Ce modèle est simple au début, mais il devient contraignant lorsque l'applicat
 
 Le schéma suivant représente l'organisation existante de manière simplifiée.
 
-```mermaid
-flowchart LR
-    users["Utilisateurs internes / externes"] --> router["Routeur / Pare-feu"]
-    router --> switch["Switch réseau LAN"]
-    switch --> srv1["Serveur applicatif 1\nApplication monolithique A"]
-    switch --> srv2["Serveur applicatif 2\nApplication monolithique B"]
-    switch --> srv3["Serveur applicatif 3\nApplication tickets/incidents"]
-    switch --> db["Serveur base de données"]
-    srv1 --> db
-    srv2 --> db
-    srv3 --> db
-    admin["Poste administrateur"] --> switch
-```
+![Figure 1 - Architecture existante monolithique](../diagrams/rendered/existant_monolithique.png)
 
 ### 1.5 Critique de l'existant
 
@@ -239,6 +256,26 @@ Le projet utilise deux environnements complémentaires.
 
 La version locale n'est pas supprimée par la version Azure. Les deux versions coexistent : la version locale sert à apprendre et tester, tandis que la version Azure sert à démontrer une exposition publique et une infrastructure Kubernetes managée.
 
+### 2.6 Synthèse du choix technique
+
+Le choix final peut être résumé ainsi :
+
+```text
+Docker
+  -> utilisé pour créer les images applicatives
+
+Kubernetes
+  -> utilisé pour orchestrer les conteneurs
+
+kind
+  -> utilisé pour apprendre et tester localement avec plusieurs nœuds
+
+Azure AKS
+  -> utilisé pour démontrer une version cloud managée avec LoadBalancer
+```
+
+Cette combinaison permet de respecter le cahier des charges tout en gardant une progression pédagogique : comprendre d'abord les bases localement, puis montrer une évolution réaliste vers le cloud.
+
 ## Chapitre 3 - Architecture Kubernetes proposée
 
 ### 3.1 Vue globale
@@ -247,37 +284,7 @@ Un cluster Kubernetes est composé d'un Control Plane et de worker nodes. Le Con
 
 Dans ce projet, l'architecture cible est la suivante :
 
-```mermaid
-flowchart TB
-    users["Utilisateurs"] --> lb["Ingress / LoadBalancer"]
-    subgraph cluster["Cluster Kubernetes"]
-        cp["Control Plane\nAPI Server, Scheduler,\nController Manager, etcd"]
-        subgraph w1["Worker Node 1"]
-            podfe1["Pod frontend\nreplica 1"]
-            podapi1["Pod backend API\nreplica 1"]
-        end
-        subgraph w2["Worker Node 2"]
-            podfe2["Pod frontend\nreplica 2"]
-            podapi2["Pod backend API\nreplica 2"]
-        end
-        svcfe["Service frontend"]
-        svcapi["Service backend"]
-        svcdb["Service PostgreSQL"]
-        db["PostgreSQL\nStatefulSet / Pod"]
-    end
-    lb --> svcfe
-    svcfe --> podfe1
-    svcfe --> podfe2
-    podfe1 --> svcapi
-    podfe2 --> svcapi
-    svcapi --> podapi1
-    svcapi --> podapi2
-    podapi1 --> svcdb
-    podapi2 --> svcdb
-    svcdb --> db
-    cp -. orchestre .-> w1
-    cp -. orchestre .-> w2
-```
+![Figure 2 - Architecture cible Kubernetes](../diagrams/rendered/architecture_cible_kubernetes.png)
 
 ### 3.2 Control Plane
 
@@ -335,25 +342,7 @@ Cette architecture est volontairement simple. Elle permet d'expliquer facilement
 
 La haute disponibilité est démontrée au niveau frontend et backend grâce aux replicas. Kubernetes maintient le nombre de Pods demandé. Si un Pod disparaît, le Deployment et le ReplicaSet recréent automatiquement un nouveau Pod.
 
-```mermaid
-flowchart TB
-    users["Utilisateurs"] --> ingress["Ingress / LoadBalancer"]
-    ingress --> svc["Service backend"]
-    subgraph cluster["Cluster Kubernetes"]
-        subgraph worker1["Worker Node 1"]
-            pod1["backend-api\nPod replica 1"]
-        end
-        subgraph worker2["Worker Node 2"]
-            pod2["backend-api\nPod replica 2"]
-        end
-        deploy["Deployment backend\nreplicas: 2"]
-    end
-    svc --> pod1
-    svc --> pod2
-    deploy -. maintient l'état désiré .-> pod1
-    deploy -. maintient l'état désiré .-> pod2
-    pod2 --> available["Application toujours disponible\nvia le replica restant"]
-```
+![Figure 4 - Haute disponibilité avec replicas](../diagrams/rendered/haute_disponibilite.png)
 
 Dans la version locale, les nœuds kind tournent sur la même machine physique. La haute disponibilité y est donc démontrée au niveau logique Kubernetes. Dans AKS, les nœuds correspondent à des machines virtuelles Azure séparées, ce qui rend la démonstration plus proche d'une architecture réelle.
 
@@ -441,7 +430,20 @@ Le routage est le suivant :
 /api   -> backend-api
 ```
 
-### 4.6 Captures de l'application
+### 4.6 Composants applicatifs déployés
+
+La version locale déployée dans Kubernetes contient les composants suivants.
+
+| Composant | Type Kubernetes | Nombre d'instances | Rôle |
+| --- | --- | --- | --- |
+| Frontend | Deployment + Service | 2 replicas | Interface web utilisateur |
+| Backend API | Deployment + Service | 2 replicas de base, 3 après test de scaling | Gestion des tickets et exposition de l'API |
+| PostgreSQL | StatefulSet + Service | 1 instance | Stockage des tickets |
+| Ingress NGINX | Ingress Controller | 1 contrôleur | Exposition HTTP locale |
+
+Le frontend et le backend sont répliqués afin de démontrer la redondance applicative. PostgreSQL reste volontairement en une seule instance pour garder le projet simple et concentré sur Kubernetes.
+
+### 4.7 Captures de l'application
 
 Capture de la page principale :
 
@@ -481,15 +483,7 @@ La région `spaincentral` a été retenue car la subscription Azure for Students
 
 ### 5.3 Chaîne de déploiement cloud
 
-```mermaid
-flowchart LR
-    dev["Code source"] --> build["docker build"]
-    build --> push["docker push"]
-    push --> acr["Azure Container Registry"]
-    acr --> aks["Azure Kubernetes Service"]
-    aks --> lb["Azure LoadBalancer"]
-    lb --> user["Utilisateur Internet"]
-```
+![Figure 3 - Flux de déploiement Docker vers Kubernetes](../diagrams/rendered/flux_deploiement.png)
 
 ### 5.4 Scripts Azure
 
@@ -539,7 +533,24 @@ Capture de la version Azure :
 
 ![Application Wendev Tickets sur Azure AKS](../screenshots/wendev-tickets-azure.png)
 
-### 5.6 Maîtrise des coûts
+### 5.6 Architecture cloud réalisée
+
+Dans Azure, le chemin d'accès réel est le suivant :
+
+```text
+Utilisateur Internet
+  -> IP publique Azure LoadBalancer
+  -> Service Kubernetes frontend
+  -> Pods frontend
+  -> Service Kubernetes backend-api
+  -> Pods backend-api
+  -> Service Kubernetes postgres
+  -> Pod PostgreSQL
+```
+
+Les Services backend et PostgreSQL restent internes au cluster. Seul le frontend est exposé publiquement par le LoadBalancer. Cette séparation permet de limiter l'exposition directe des composants sensibles.
+
+### 5.7 Maîtrise des coûts
 
 Le cluster utilise deux nœuds `Standard_B2s_v2`. Le prix observé le 31/05/2026 via l'API officielle Azure Retail Prices est d'environ :
 
@@ -556,7 +567,7 @@ Estimation compute :
 
 Avec un crédit restant d'environ `68.47 USD`, le budget est suffisant pour les tests, captures et répétitions, mais il n'est pas adapté à un cluster AKS allumé en continu pendant un mois. La stratégie retenue est donc d'arrêter AKS après usage et de le redémarrer avant la démonstration.
 
-## Tests, résultats et validation
+## Chapitre 6 - Tests, résultats et validation
 
 ### 6.1 Vérification locale
 
@@ -596,7 +607,23 @@ Les sorties détaillées sont conservées dans :
 rapport/captures_phase5_azure_aks.md
 ```
 
-### 6.3 Difficultés rencontrées
+### 6.3 Scénario de démonstration
+
+Le scénario de démonstration prévu devant l'encadrant est le suivant :
+
+1. présenter brièvement l'architecture existante et ses limites ;
+2. expliquer le rôle de Docker et Kubernetes ;
+3. afficher les nœuds du cluster avec `kubectl get nodes -o wide` ;
+4. afficher les Pods et leur répartition avec `kubectl get pods -n wendev -o wide` ;
+5. afficher les Services avec `kubectl get svc -n wendev` ;
+6. ouvrir l'application Wendev Tickets ;
+7. créer un ticket de test ;
+8. supprimer un Pod backend pour montrer l'auto-réparation ;
+9. vérifier que Kubernetes recrée automatiquement un Pod ;
+10. présenter la version Azure AKS, l'ACR et le LoadBalancer ;
+11. expliquer les limites et perspectives.
+
+### 6.4 Difficultés rencontrées
 
 | Difficulté | Cause | Solution |
 | --- | --- | --- |
@@ -608,7 +635,7 @@ rapport/captures_phase5_azure_aks.md
 
 Ces difficultés sont importantes car elles montrent une vraie démarche de troubleshooting et d'adaptation, au-delà d'un simple déploiement théorique.
 
-## Limites et perspectives
+## Chapitre 7 - Limites et perspectives
 
 ### 7.1 Limites
 

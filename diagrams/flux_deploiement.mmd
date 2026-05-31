@@ -1,4 +1,4 @@
-flowchart LR
+flowchart TB
     dev["Développeur / Administrateur"] --> code["Code source\nFrontend + Backend"]
     code --> build["docker build\nCréation des images"]
     build --> registry["Registry Docker\nDocker Hub / Azure Container Registry"]
@@ -6,6 +6,7 @@ flowchart LR
     deploy --> k8s["Cluster Kubernetes"]
 
     subgraph k8s["Cluster Kubernetes"]
+        direction LR
         dep["Deployments"]
         pods["Pods"]
         svc["Services"]

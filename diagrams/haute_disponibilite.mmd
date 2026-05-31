@@ -19,7 +19,7 @@ flowchart TB
     deploy -. maintient l'état désiré .-> pod1
     deploy -. maintient l'état désiré .-> pod2
 
-    worker1 -. panne possible .-> pod1
+    incident["Suppression ou panne d'un Pod"] -. incident simulé .-> pod1
     pod2 --> available["Application toujours disponible\nvia le replica restant"]
 
     classDef worker fill:#f0fdf4,stroke:#16a34a,color:#111827
@@ -30,4 +30,4 @@ flowchart TB
     class worker1,worker2 worker
     class pod1,pod2 pod
     class ingress,svc service
-    class available,deploy note
+    class available,deploy,incident note
