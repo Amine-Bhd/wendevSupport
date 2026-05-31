@@ -102,9 +102,32 @@ Les slides sont disponibles dans :
 presentation/slides_soutenance_kubernetes.md
 ```
 
+## Déploiement Azure AKS
+
+La version cloud est préparée dans :
+
+```text
+infra/azure/
+k8s/azure/
+rapport/phase5_deploiement_azure_aks.md
+```
+
+Déroulé prévu :
+
+```powershell
+.\infra\azure\01-provision-aks.ps1
+.\infra\azure\02-deploy-app.ps1
+.\infra\azure\03-check-app.ps1
+```
+
+Le script de nettoyage des ressources Azure est :
+
+```powershell
+.\infra\azure\04-cleanup-azure.ps1
+```
+
 ## Note de sécurité
 
 Le fichier `k8s/02-secret.yaml` est ignoré par Git. Il faut créer ce fichier localement à partir de `k8s/examples/02-secret.example.yaml`.
 
 Pour une version cloud ou publique, il faut remplacer les secrets de démonstration par une solution adaptée : GitHub Secrets, Azure Key Vault, variables d'environnement sécurisées ou Secret Kubernetes généré au moment du déploiement.
-

@@ -385,6 +385,8 @@ Captures disponibles :
 - `screenshots/wendev-tickets-after-create.png` : application après création d'un ticket de test.
 - `rapport/captures_phase4_kubectl.md` : sorties terminal Kubernetes et tests Ingress.
 
+La phase Azure est préparée dans `rapport/phase5_deploiement_azure_aks.md`. Elle décrit le passage vers Azure Kubernetes Service, l'utilisation d'Azure Container Registry et l'exposition de l'application par un LoadBalancer Azure.
+
 Sorties terminal déjà sauvegardées dans `rapport/captures_phase4_kubectl.md` :
 
 - sortie de `kubectl get nodes -o wide` ;

@@ -12,6 +12,7 @@ k8s/02-secret.yaml
 dist/
 build/
 coverage/
+infra/azure/rendered/
 
 # Références locales non destinées à un dépôt public
 *.pdf
@@ -28,4 +29,3 @@ Thumbs.db
 *.zip
 *.7z
 *.rar
-

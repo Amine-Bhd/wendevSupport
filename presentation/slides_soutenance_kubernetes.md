@@ -285,7 +285,7 @@ Prochaine évolution possible :
 - pousser le projet sur GitHub ;
 - construire les images dans un registry ;
 - déployer sur Azure Kubernetes Service ;
-- exposer l'application avec un LoadBalancer Azure ou un Ingress Controller ;
+- exposer l'application avec un LoadBalancer Azure ;
 - utiliser une base PostgreSQL managée.
 
 <!-- Notes : GitHub sert à la traçabilité et facilite l'automatisation future. -->
@@ -312,4 +312,3 @@ Apports démontrés :
 - scaling.
 
 <!-- Notes : Terminer en disant que l'objectif principal était d'apprendre Kubernetes par la pratique. -->
-
